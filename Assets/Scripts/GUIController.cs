@@ -14,7 +14,9 @@ public class GUIController : MonoBehaviour
 		transform.GetComponent<Rigidbody>().AddForce(Vector3.zero);
 		transform.GetComponent<Rigidbody>().isKinematic = true;
 		transform.localPosition = new Vector3(potionCounter, 0, 0);
+		transform.GetComponent<Rigidbody>().velocity = Vector3.zero;
 		transform.GetComponent<Rigidbody>().isKinematic = false;
+		
 		potionCounter += 1.5f;
 		
 		if (potionCounter > 2)
