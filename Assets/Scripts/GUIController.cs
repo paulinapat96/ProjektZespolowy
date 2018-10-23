@@ -1,13 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GUIController : MonoBehaviour
 {
-	private float potionCounter = -1.5f;
+    	private float potionCounter = -1.5f;
 	void Start () {
 		
 	}
+
+    public void OnClickButtonGarden()
+    {
+        SceneManager.LoadScene(2);
+        Debug.Log("Wlasnie wygrales gre!");
+    }
 
 	public void OnClickRestartButton(Transform transform)
 	{	
