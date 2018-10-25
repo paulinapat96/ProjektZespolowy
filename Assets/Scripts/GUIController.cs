@@ -1,12 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-<<<<<<< Updated upstream
 using UnityEngine.SceneManagement;
-
-=======
-using UnityEngine.SceneManagment;
->>>>>>> Stashed changes
 public class GUIController : MonoBehaviour
 {
     	private float potionCounter = -1.5f;
