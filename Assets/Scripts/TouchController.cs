@@ -14,7 +14,16 @@ public class TouchController : MonoBehaviour
 
     public static event Action<GameObject> OnTouch;
     public static event Action<float, float> OnSwipe;
-    
+    public static event Action<Vector3> OnHold;
+
+    private Plane plane;
+    private Camera mainCamera;
+
+    void Start()
+    {
+        plane = new Plane(Vector3.up, transform.position);
+        mainCamera = Camera.main;
+    }
     void Update()
     {
         foreach (Touch touch in Input.touches)
@@ -33,6 +42,7 @@ public class TouchController : MonoBehaviour
                     
                     isSwipe = true;
                     fingerStartPos = touch.position;
+                    
                     break;
 
                 case TouchPhase.Canceled:
@@ -41,6 +51,7 @@ public class TouchController : MonoBehaviour
 
                 case TouchPhase.Moved:
                     DetectSwipe(touch);
+                    DetectHold(touch);
                     break;
 
                 case TouchPhase.Ended:
@@ -52,7 +63,7 @@ public class TouchController : MonoBehaviour
 
     private void DetectTap(Touch touch)
     {
-        Ray ray = Camera.main.ScreenPointToRay(touch.position);
+        Ray ray = mainCamera.ScreenPointToRay(touch.position);
         RaycastHit hit;
         if(Physics.Raycast(ray, out hit)){
                
@@ -84,6 +95,16 @@ public class TouchController : MonoBehaviour
             deltaShiftY = touch.position.y - fingerStartPos.y;
 
             if (OnSwipe != null) OnSwipe(deltaShiftX, deltaShiftY);
+        }
+    }
+
+    private void DetectHold(Touch touch)
+    {
+        Ray ray = mainCamera.ScreenPointToRay(touch.position);
+        float distance = 0;
+        if (plane.Raycast(ray, out distance)){ 
+            Vector3 pos = ray.GetPoint(distance); 
+            if (OnHold != null) OnHold(pos);
         }
     }
 }

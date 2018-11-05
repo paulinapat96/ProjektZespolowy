@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
 public class GUIController : MonoBehaviour
 {
     	private float potionCounter = -1.5f;
 	void Start () {
 		
 	}
+    public void On_Click() {
+        Debug.Log("jeeej");
+        //odpalanie innej sceny
+        SceneManager.LoadScene(2);
+    }
 
     public void OnClickButtonGarden()
     {
