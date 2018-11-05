@@ -1,7 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 using UnityEngine.SceneManagement;
+
+
+//using UnityEngine.SceneManagement;
+
 public class GUIController : MonoBehaviour
 {
     	private float potionCounter = -1.5f;
