@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 public class GUIController : MonoBehaviour
 {
     	private float potionCounter = -1.5f;
@@ -37,3 +38,5 @@ public class GUIController : MonoBehaviour
 	}
 
 }
+
+using UnityEngine.SceneManagement;
