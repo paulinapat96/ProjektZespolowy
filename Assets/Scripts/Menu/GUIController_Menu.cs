@@ -1,17 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 using UnityEngine.SceneManagement;
 
-<<<<<<< HEAD:Assets/Scripts/GUIController.cs
-
-//using UnityEngine.SceneManagement;
-
-public class GUIController : MonoBehaviour
-=======
 public class GUIController_Menu : MonoBehaviour
->>>>>>> master:Assets/Scripts/Menu/GUIController_Menu.cs
 {
 
 	void Start () {
@@ -25,3 +17,6 @@ public class GUIController_Menu : MonoBehaviour
         Debug.Log("Wlasnie wygrales gre!");
     }
 }
+//widziesZ? tak wyglądają zmergowane pliki jak git nie wie co zrobić
+
+    //okej śmiga, to co ja zrbiłąm to usunęąm wszystkie Twoje zmiany tym czerwonym smietniczkiem u góry
