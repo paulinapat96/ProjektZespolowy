@@ -18,7 +18,7 @@ public abstract class Enemy : MonoBehaviour
         set { _maxHp = value; }
     }
     
-    public float DmgPower
+    public int DmgPower
     {
         get { return _damagePower;}
         set { _damagePower = value; }
@@ -38,7 +38,7 @@ public abstract class Enemy : MonoBehaviour
     
     private int _currentHp;
     private int _maxHp;
-    private float _damagePower;
+    private int _damagePower;
     private float _movementSpeed;
 
     protected abstract void Init();
