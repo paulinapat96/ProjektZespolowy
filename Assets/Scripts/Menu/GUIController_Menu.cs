@@ -13,7 +13,10 @@ public class GUIController_Menu : MonoBehaviour
 
     public void OnClickButtonGarden()
     {
+        SceneManager.LoadScene(1);
+    }
+    public void OnClickButtonForest()
+    {
         SceneManager.LoadScene(2);
-        Debug.Log("Wlasnie wygrales gre!");
     }
 }
