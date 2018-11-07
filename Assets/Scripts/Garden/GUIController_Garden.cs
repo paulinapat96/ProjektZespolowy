@@ -19,6 +19,6 @@ public class GUIController_Garden : MonoBehaviour {
 
     public void OnClickMenuButton()
     {
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(0);
     }
 }
