@@ -16,6 +16,11 @@ public class Trail : MonoBehaviour {
 		transform.position = new Vector3(touch.x, 0, touch.z);
 	}
 
+	private void OnDestroy()
+	{
+		TouchController.OnHold -= Move;
+	}
+
 	// Update is called once per frame
 	void Update () {
 		

@@ -22,8 +22,14 @@ public class GUIController_Forrest : MonoBehaviour
     public void OnClickButtonMenu()
     {
         Time.timeScale = 0;
-        Garden.OnHpChange -= ChangeHealthBar;
+
         SceneManager.LoadScene(0);
         
     }
+    
+    private void OnDestroy()
+    {
+        Garden.OnHpChange -= ChangeHealthBar;
+    }
+
 }
