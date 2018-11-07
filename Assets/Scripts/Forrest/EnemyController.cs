@@ -9,7 +9,7 @@ public class EnemyController : MonoBehaviour
 	[SerializeField] private List<GameObject> enemiesPrefs = new List<GameObject>();
 	private int maxOnceSpawnLimit = 10;
 	void Start () {
-		
+		Time.timeScale = 1; //przniesc do gamelogic
 		StartCoroutine(WaitToSpawnEnemy(2));
 	}
 	
