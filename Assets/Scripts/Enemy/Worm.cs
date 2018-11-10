@@ -17,8 +17,8 @@ public class Worm : Enemy {
     }
     protected override void Init()
     {
-        MaxHP = 100;
-        HP = MaxHP;
+        MaxHP = 93;
+        currentHP = MaxHP;
         DmgPower = 10;
         MovementSpeed = 0.3f;
     }
