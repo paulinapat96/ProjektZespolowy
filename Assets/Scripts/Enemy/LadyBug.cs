@@ -17,7 +17,7 @@ public class LadyBug : Enemy {
     protected override void Init()
     {
         MaxHP = 100;
-        HP = MaxHP;
+        currentHP = MaxHP;
         DmgPower = 10;
         MovementSpeed = 0.1f;
     }

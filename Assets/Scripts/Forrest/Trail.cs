@@ -21,7 +21,7 @@ public class Trail : MonoBehaviour {
 		TouchController.OnHold -= Move;
 	}
 
-	// Update is called once per frame
+	
 	void Update () {
 		
 	}

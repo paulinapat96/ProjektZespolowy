@@ -6,10 +6,10 @@ using UnityEngine;
 public abstract class Enemy : MonoBehaviour
 {
    #region Properties
-    public int HP
+    public int currentHP
     {
-        get { return _currentHp;}
-        set { _currentHp = value; }
+        get { return _currentCurrentHp;}
+        set { _currentCurrentHp = value; }
     }
     
     public int MaxHP
@@ -32,11 +32,11 @@ public abstract class Enemy : MonoBehaviour
 
     public bool IsDead()
     {
-        return (_currentHp <= 0) ?true : false;
+        return (_currentCurrentHp <= 0) ?true : false;
     }
     #endregion
     
-    private int _currentHp;
+    private int _currentCurrentHp;
     private int _maxHp;
     private int _damagePower;
     private float _movementSpeed;

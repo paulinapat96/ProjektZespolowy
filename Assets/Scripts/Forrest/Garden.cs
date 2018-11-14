@@ -10,16 +10,19 @@ public class Garden : MonoBehaviour
 	[SerializeField] private Material barrierCrackedTMaterial;
 	[SerializeField] private Texture[] barrierCrackedTextures;
 	[SerializeField] private int currentTexture;
+	[SerializeField] private ParticleSystem bubbleBoomParticle;
 	private int _maxHp;
 
 	public static event Action<float> OnHpChange;
 	
+
 	void Start ()
 	{
 		_maxHp = 100;
 		_curerentHp = _maxHp;
-		currentTexture = -1;
+		currentTexture = 0;
 		ReduceHP(0);
+		ChangeMaterial();
 	}
 	
 
@@ -39,24 +42,25 @@ public class Garden : MonoBehaviour
 	{
 		_curerentHp -= value;
 		if (_curerentHp <= 0) Kill();
-		else if (_curerentHp/_maxHp < 10-currentTexture/10)
+		else if ((float)_curerentHp / _maxHp < (float)(barrierCrackedTextures.Length - currentTexture -1) / 10)
 		{
 			ChangeMaterial();
+			currentTexture = (int) (10 - (((float) _curerentHp / _maxHp) * 10 % 10));
 		}
 		
-		if (OnHpChange != null) OnHpChange((float)_curerentHp/(float)_maxHp);  //do poprawy
+		if (OnHpChange != null) OnHpChange((float)_curerentHp/(float)_maxHp);  
 		
 		
 	}
 
 	private void Kill()
 	{
+		bubbleBoomParticle.Play();
 		Start();
 	}
 
 	private void ChangeMaterial()
 	{
-		currentTexture++;
 		barrierCrackedTMaterial.mainTexture = barrierCrackedTextures[currentTexture];
 	}
 }

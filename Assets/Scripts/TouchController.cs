@@ -16,8 +16,10 @@ public class TouchController : MonoBehaviour
     public static event Action<float, float> OnSwipe;
     public static event Action<Vector3> OnHold;
 
+
     private Plane plane;
     private Camera mainCamera;
+    private GameObject lastTapped;
 
     void Start()
     {
@@ -28,10 +30,10 @@ public class TouchController : MonoBehaviour
     {
         foreach (Touch touch in Input.touches)
         {
-            // double Click
-            if (touch.tapCount == 2)
+            // multiple Tap
+            if (touch.tapCount > 1)
             {
-                DetectDoubleTap(touch);
+                DetectMultipleTap(touch);
             }
            
             bool wasSwiping = false;
@@ -70,13 +72,14 @@ public class TouchController : MonoBehaviour
             if (hit.collider.CompareTag("Interactable"))
             {
                 if (OnTouch != null) OnTouch(hit.collider.gameObject);
+                Debug.Log("tapnięcie");
             }
         }
     }
 
-    private void DetectDoubleTap(Touch touch)
+    private void DetectMultipleTap(Touch touch)
     {
-        Debug.Log("Double Click");
+
     }
    
     private void DetectSwipe(Touch touch)
