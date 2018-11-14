@@ -1,8 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-using System.Collections;
 using UnityEngine.UI;
 
 public class GardenController : MonoBehaviour {
@@ -16,11 +15,24 @@ public class GardenController : MonoBehaviour {
 
     void Start () {
         cam = Camera.main;
+        //TouchController.OnHold += Move;
     }
-	
-	// Update is called once per frame
-	void Update () {
-        
+
+    /*private void Move(Vector3 touch)
+    {
+        transform.position = new Vector3(touch.x, 0, touch.z);
+    }
+
+    private void OnDestroy()
+    {
+        TouchController.OnHold -= Move;
+    }*/
+
+    // Update is called once per frame
+    void Update () {
+
+        //Debug.Log("x=" + transform.position.x + "y=" + transform.position.y + "z=" + transform.position.z);
+
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
@@ -32,7 +44,6 @@ public class GardenController : MonoBehaviour {
                     fingerPos = Input.GetTouch(0).position;
                     //Debug.Log("x=" + fingerPos.x + "y=" + fingerPos.y);
                     plantPos = cam.ScreenToWorldPoint(new Vector3(fingerPos.x, fingerPos.y, 10.0f));
-                    //Debug.Log("x=" + plantPos.x + "y=" + plantPos.y);
                     SpawnPlant(plantPos.x,plantPos.y,plantPos.z);
                     break;
 
@@ -40,6 +51,8 @@ public class GardenController : MonoBehaviour {
                 case TouchPhase.Moved:
                     fingerPos = Input.GetTouch(0).position;
                     plant.transform.position = cam.ScreenToWorldPoint(new Vector3(fingerPos.x, fingerPos.y, 10.0f));
+                    //Debug.Log("x=" + plantPos.x + "y=" + plantPos.y);
+                    //Debug.Log("x=" + plantPos.x + "y=" + plantPos.y + "z=" + plantPos.z);
                     break;
 
                 case TouchPhase.Ended:
