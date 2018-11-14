@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class EnemyController : MonoBehaviour
 {
@@ -15,7 +17,7 @@ public class EnemyController : MonoBehaviour
 		Time.timeScale = 1; //przeniesc do gamelogic
 		
 		StartCoroutine(WaitToSpawnEnemy(2));
-		StartCoroutine(WaitToSpawnWeed(20));
+		StartCoroutine(WaitToSpawnWeed(25));
 	}
 	
 	public void SpawnEnemy()
@@ -33,12 +35,8 @@ public class EnemyController : MonoBehaviour
 
 	public void SpawnEnemy(Vector3 position, int quantity)
 	{
-		//position = new Vector3(20,0,20);
 		for (int i = 0; i < quantity; i++)
 		{
-			//Instantiate(enemiesPrefs[1], new Vector3(position.x + 2.0f * SignRandomize() , 0, position.z + 2.0f * SignRandomize() ), transform.rotation);
-			//Instantiate(enemiesPrefs[1], new Vector3(0 + position.x/2 , 0, 0 + position.z/2), transform.rotation);
-			
 			if (SignRandomize() > 0)
 			{
 				Instantiate(enemiesPrefs[1], new Vector3(position.x + 3 * SignRandomize(), 0, Random.Range(position.z -3.0f ,position.z + 3.0f)), transform.rotation);
@@ -52,7 +50,9 @@ public class EnemyController : MonoBehaviour
 	
 	private void SpawnWeed()
 	{
-		GameObject weed = Instantiate(weedsPrefs[0], new Vector3(Random.Range(13.0f, 16.0f) * SignRandomize(), 0, Random.Range(13.0f, 25.0f) * SignRandomize()), transform.rotation);
+		Vector3 newPosition = new Vector3(Random.Range(10.0f, 18.0f) * SignRandomize(), 0, Random.Range(10.0f, 12.0f) * SignRandomize());
+		Debug.Log(newPosition);
+		GameObject weed = Instantiate(weedsPrefs[0], newPosition, transform.rotation);
 		weed.GetComponent<Weed>().OnDestroyWeed += DestroyWeed;
 		weedsList.Add(weed);
 
