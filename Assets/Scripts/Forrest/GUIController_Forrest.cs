@@ -6,12 +6,18 @@ using UnityEngine.SceneManagement;
 
 public class GUIController_Forrest : MonoBehaviour
 {
-
+    [SerializeField] private GameObject pausePanel;
     [SerializeField] private Image hpBar;
+
+    private bool isGamePaused = false;
     
     private void Start()
     {
-        Garden.OnHpChange += ChangeHealthBar;
+        Player.OnHpChange += ChangeHealthBar;
+        
+        isGamePaused = false;
+        pausePanel.SetActive(isGamePaused);
+        
     }
 
     public void ChangeHealthBar(float value)
@@ -22,14 +28,31 @@ public class GUIController_Forrest : MonoBehaviour
     public void OnClickButtonMenu()
     {
         Time.timeScale = 0;
-
         SceneManager.LoadScene(0);
+    }
+    
+    public void OnClickPauseButton()
+    {
+        if (isGamePaused)
+        {
+            Time.timeScale = 1;
+            isGamePaused = false;
+            pausePanel.SetActive(isGamePaused);
+        }
+        else
+        {
+            Time.timeScale = 0;
+            isGamePaused = true;
+            pausePanel.SetActive(isGamePaused);
+        }
+
         
     }
+
     
     private void OnDestroy()
     {
-        Garden.OnHpChange -= ChangeHealthBar;
+        Player.OnHpChange -= ChangeHealthBar;
     }
 
 }

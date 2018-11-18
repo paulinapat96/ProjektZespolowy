@@ -10,7 +10,6 @@ public class TouchController : MonoBehaviour
     private Vector2 fingerStartPos = Vector2.zero;
     private bool isSwipe = false;
     private float minSwipeDist = 50.0f;
-    private float maxSwipeTime = 0.5f;
 
     public static event Action<GameObject> OnTouch;
     public static event Action<float, float> OnSwipe;
@@ -36,7 +35,6 @@ public class TouchController : MonoBehaviour
                 DetectMultipleTap(touch);
             }
            
-            bool wasSwiping = false;
             switch (touch.phase)
             {
                 case TouchPhase.Began:
@@ -57,7 +55,7 @@ public class TouchController : MonoBehaviour
                     break;
 
                 case TouchPhase.Ended:
-                    wasSwiping = false;
+                    isSwipe = false;
                     break;
             } 
         }

@@ -12,12 +12,15 @@ public class EnemyController : MonoBehaviour
 	[SerializeField] private List<GameObject> weedsPrefs = new List<GameObject>();
 	private List<GameObject> weedsList =  new List<GameObject>();
 	
-	private int maxOnceSpawnLimit = 10;
+	private int maxOnceEnemySpawnLimit = 10;
+	private float timeToSpawnEnemy = 3;
+	private float timeToSpawnWeed = 25;
+	
 	void Start () {
 		Time.timeScale = 1; //przeniesc do gamelogic
 		
-		StartCoroutine(WaitToSpawnEnemy(2));
-		StartCoroutine(WaitToSpawnWeed(25));
+		StartCoroutine(WaitToSpawnEnemy(timeToSpawnEnemy));
+		StartCoroutine(WaitToSpawnWeed(timeToSpawnWeed));
 	}
 	
 	public void SpawnEnemy()
@@ -50,8 +53,17 @@ public class EnemyController : MonoBehaviour
 	
 	private void SpawnWeed()
 	{
-		Vector3 newPosition = new Vector3(Random.Range(10.0f, 18.0f) * SignRandomize(), 0, Random.Range(10.0f, 12.0f) * SignRandomize());
-		Debug.Log(newPosition);
+		Vector3 newPosition;
+		
+		if (SignRandomize() > 0)
+		{
+			newPosition = new Vector3(Random.Range(-12.0f, 12.0f), 0, Random.Range(11.0f, 17.0f) * SignRandomize());
+		}
+		else
+		{
+			newPosition = new Vector3(Random.Range(11.0f, 12.0f) * SignRandomize(), 0,Random.Range(-17.0f, 17.0f));
+		}
+		
 		GameObject weed = Instantiate(weedsPrefs[0], newPosition, transform.rotation);
 		weed.GetComponent<Weed>().OnDestroyWeed += DestroyWeed;
 		weedsList.Add(weed);
@@ -84,7 +96,7 @@ public class EnemyController : MonoBehaviour
 	{
 		while (true)
 		{
-			for(int i=0; i< Random.Range(2,maxOnceSpawnLimit); i++) SpawnEnemy();
+			for(int i=0; i< Random.Range(2,maxOnceEnemySpawnLimit); i++) SpawnEnemy();
 			yield return new WaitForSeconds(waitTime);
 			
 		}

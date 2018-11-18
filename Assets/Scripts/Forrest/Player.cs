@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine;
 
-public class Garden : MonoBehaviour
+public class Player : MonoBehaviour
 {
 	[SerializeField] private int _curerentHp;
 	[SerializeField] private Material barrierCrackedTMaterial;
