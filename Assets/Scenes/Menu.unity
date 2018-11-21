@@ -729,6 +729,7 @@ GameObject:
   - component: {fileID: 534669905}
   - component: {fileID: 534669904}
   - component: {fileID: 534669903}
+  - component: {fileID: 534669906}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: Untagged
@@ -795,7 +796,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 23.000002, y: 51.744003, z: 2.946}
+  m_LocalEulerAnglesHint: {x: 23.000002, y: 57.58485, z: 2.946}
+--- !u!111 &534669906
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 534669902}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: cd138225b23a0f240bc5cd772b81c13b, type: 2}
+  m_Animations:
+  - {fileID: 0}
+  - {fileID: 7400000, guid: cd138225b23a0f240bc5cd772b81c13b, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &564162711
 GameObject:
   m_ObjectHideFlags: 0
@@ -2286,7 +2303,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 2065943805}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\Paulina\.Rider2018.1\system\resharper-host\Local\Transient\ReSharperHost\v12\SolutionCaches\_ZUT_ProjektZespolowy.-482422397.00" t="ExcludeRecursive" />
+    <e p="E:\Projekty\ZUT_ProjektZespolowy" t="IncludeRecursive">
+      <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
+      <e p="Assets" t="Include">
+        <e p="Models" t="Include">
+          <e p="BrokenVector" t="Include">
+            <e p="FreeLowPolyPack" t="Include">
+              <e p="readme.txt" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Scripts" t="Include">
+          <e p="Enemy" t="Include">
+            <e p="Enemy.cs" t="Include" />
+            <e p="LadyBug.cs" t="Include" />
+            <e p="Weed.cs" t="Include" />
+            <e p="Worm.cs" t="Include" />
+          </e>
+          <e p="Forrest" t="Include">
+            <e p="AnimateBarrier.cs" t="Include" />
+            <e p="EnemyController.cs" t="Include" />
+            <e p="GUIController_Forrest.cs" t="Include" />
+            <e p="Player.cs" t="Include" />
+            <e p="Trail.cs" t="Include" />
+          </e>
+          <e p="Garden" t="Include">
+            <e p="GardenController.cs" t="Include" />
+            <e p="GUIController_Garden.cs" t="Include" />
+          </e>
+          <e p="Menu" t="Include">
+            <e p="GUIController_Menu.cs" t="Include" />
+          </e>
+          <e p="Observer.cs" t="Include" />
+          <e p="TouchController.cs" t="Include" />
+        </e>
+      </e>
+      <e p="Library" t="ExcludeRecursive" />
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="Temp" t="ExcludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+      </e>
+      <e p="ZUT_ProjektZespolowy.sln" t="IncludeFlat" />
+    </e>
+  </component>
+</project>

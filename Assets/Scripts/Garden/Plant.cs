@@ -60,7 +60,8 @@ public class Plant : MonoBehaviour
 
     private void OnDestroy()
     {
-        //TouchController.OnHold -= Move;
+        TouchController.OnRelease -= Planting;
+        TouchController.OnHold -= Move;
         TouchController.OnTouch -= ShowStats;
     }
 
