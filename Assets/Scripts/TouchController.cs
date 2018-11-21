@@ -14,7 +14,7 @@ public class TouchController : MonoBehaviour
     public static event Action<GameObject> OnTouch;
     public static event Action<float, float> OnSwipe;
     public static event Action<Vector3> OnHold;
-
+    public static event Action OnRelease;
 
     private Plane plane;
     private Camera mainCamera;
@@ -55,6 +55,7 @@ public class TouchController : MonoBehaviour
                     break;
 
                 case TouchPhase.Ended:
+                    DetectRelease(touch);
                     isSwipe = false;
                     break;
             } 
@@ -79,7 +80,12 @@ public class TouchController : MonoBehaviour
     {
 
     }
-   
+
+    private void DetectRelease(Touch touch)
+    {
+        if (OnRelease != null) OnRelease();
+    }
+
     private void DetectSwipe(Touch touch)
     {
         float gestureDist = (touch.position - fingerStartPos).magnitude;
