@@ -32,7 +32,7 @@ public class GUIController_Garden : MonoBehaviour
 
     public void OnClickPlantButton(int type)
     {
-        Vector3 pos = new Vector3(100.0f, 1.0f, 15.0f);
+        Vector3 pos = new Vector3(15.0f, 1.0f, 15.0f);
         if (OnClick != null) OnClick(pos, type);
 
     }

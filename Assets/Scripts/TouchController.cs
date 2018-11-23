@@ -39,7 +39,6 @@ public class TouchController : MonoBehaviour
             {
                 case TouchPhase.Began:
                     DetectTap(touch);
-                    
                     isSwipe = true;
                     fingerStartPos = touch.position;
                     

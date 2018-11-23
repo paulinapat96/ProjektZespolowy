@@ -1,19 +1,31 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+using UnityEngine.SceneManagement;
 
 public class Plant : MonoBehaviour
 {
     private int plantState;
     private bool moveUp;
 
+    private void Awake()
+    {
+        plantState = 0;
+        /* plant states:
+         * 0 - is picked from catalogue
+         * 1 - is chosen
+         * 2 - is planted */
+    }
     // Use this for initialization
     void Start()
     {
         TouchController.OnHold += Move;
-        TouchController.OnTouch += ShowStats;
-        TouchController.OnRelease += Planting;
-        plantState = 0;
+        TouchController.OnTouch += Planting;
+
         moveUp = true;
     }
 
@@ -27,10 +39,10 @@ public class Plant : MonoBehaviour
     }
     private void Move(Vector3 touch)
     {
-        if ((touch - transform.position).magnitude < 5.0f)
+        plantState = 1;
+        if (this.gameObject.activeSelf == true)
         {
             transform.position = new Vector3((int)touch.x, 1.0f, (int)touch.z);
-            plantState = 1;
         }
     }
 
@@ -47,22 +59,26 @@ public class Plant : MonoBehaviour
             transform.position = new Vector3(transform.position.x, transform.position.y - 0.02f, transform.position.z);
     }
 
-    void ShowStats(GameObject plant)
+    public void Planting(GameObject obj)
     {
-         Debug.Log("To moje staty");
+        if (plantState == 1)
+        {
+            TouchController.OnHold -= Move;
+            transform.position = new Vector3(transform.position.x, 0.5f, transform.position.z);
+            plantState = 2;
+        }
+        if (plantState ==2) Debug.Log("x=" + transform.position.x + "z=" + transform.position.z);
     }
 
-    void Planting()
+    public int GetPlantState()
     {
-        TouchController.OnHold -= Move;
-        transform.position = new Vector3(transform.position.x, 0.5f, transform.position.z);
+        return plantState;
     }
 
     private void OnDestroy()
     {
-        TouchController.OnRelease -= Planting;
+        TouchController.OnTouch -= Planting;
         TouchController.OnHold -= Move;
-        TouchController.OnTouch -= ShowStats;
     }
 
 }
