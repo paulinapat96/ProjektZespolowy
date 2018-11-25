@@ -9,10 +9,14 @@ public class GardenController : MonoBehaviour
     // Use this for initialization
     [SerializeField] private List<GameObject> plantPrefs = new List<GameObject>();
     private List<GameObject> plants = new List<GameObject>();
-    private int[,] grid = new int[12, 12];
+    public int[,] grid = new int[12, 12];
+//    GameObject tile = new GameObject();
 
     void Start()
     {
+  //      tile = GameObject.Find("Tile");
+    //    tile.SetActive(false);
+      //  tile.GetComponent<Renderer>().material.color = Color.green;
         for (int i = 0; i < 12; i++)
         {
             for (int j = 0; j < 12; j++)
