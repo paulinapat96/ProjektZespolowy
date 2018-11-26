@@ -11,37 +11,38 @@ public class Plant : MonoBehaviour
 {
     private int plantState;
     private bool moveUp;
-    [SerializeField] private GameObject tile = new GameObject();
+    private bool isActive;
+
+    [SerializeField] private Text stats;
 
     private void Awake()
     {
-        tile = new GameObject();
-        tile.SetActive(false);
-        tile.GetComponent<Renderer>().material.color = Color.green;
-
         plantState = 0;
         /* plant states:
          * 0 - is picked from catalogue
-         * 1 - is chosen
+         * 1 - is chosen to be planted
          * 2 - is planted */
     }
-    // Use this for initialization
 
     void Start()
     {
+        stats.enabled = false;
+        moveUp = true;
+        isActive = false;
+
         TouchController.OnHold += Move;
         TouchController.OnTouch += Planting;
-
-        moveUp = true;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (plantState == 0)
         {
             Float();
-            tile.SetActive(true);
+        }
+        if(transform.position.y == 0.5f)
+        {
+            plantState = 2;
         }
     }
     private void Move(Vector3 touch)
@@ -74,17 +75,12 @@ public class Plant : MonoBehaviour
             {
                 transform.position = new Vector3((int)(5.0f), 1.0f, (int)(5.0f));
             }
-            tile.transform.position = new Vector3(transform.position.x, 0.005f, transform.position.z);
-            if (GameObject.Find("_Logic").GetComponent<GardenController>().grid[(int)transform.position.x - 5, (int)transform.position.z - 5] == 1)
-                tile.GetComponent<Renderer>().material.color = Color.red;
-            else
-                tile.GetComponent<Renderer>().material.color = Color.green;
         }
     }
 
     private void Float()
     {
-        if (transform.position.y > 2.0f)
+        if (transform.position.y > 1.4f)
             moveUp = false;
         if (transform.position.y < 1.0f)
             moveUp = true;
@@ -97,16 +93,26 @@ public class Plant : MonoBehaviour
 
     public void Planting(GameObject obj)
     {
-        if (plantState == 1 && GameObject.Find("_Logic").GetComponent<GardenController>().grid[(int)transform.position.x-5,(int)transform.position.z-5] == 0)
+        if (obj == this.gameObject)
         {
-            TouchController.OnHold -= Move;
-            transform.position = new Vector3(transform.position.x, 0.5f, transform.position.z);
-            GameObject.Find("_Logic").GetComponent<GardenController>().grid[(int)transform.position.x - 5, (int)transform.position.z - 5] = 1;
-            tile.SetActive(false);
-            tile.transform.position = new Vector3(11.0f, 0.005f, 11.0f);
-            plantState = 2;
+            if (plantState == 1 && GameObject.Find("_Logic").GetComponent<GardenController>().grid[(int)transform.position.x - 5, (int)transform.position.z - 5] == 0)
+            {
+                TouchController.OnHold -= Move;
+                transform.position = new Vector3(transform.position.x, 0.5f, transform.position.z);
+                GameObject.Find("_Logic").GetComponent<GardenController>().grid[(int)transform.position.x - 5, (int)transform.position.z - 5] = 1;
+            }
+            if (plantState == 2) isActive = !isActive;
+            if (isActive)
+            {
+                stats.enabled = true;
+                this.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
+            }
+            else
+            {
+                stats.enabled = false;
+                this.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
+            }
         }
-        if (plantState ==2) Debug.Log("x=" + transform.position.x + "z=" + transform.position.z);
     }
 
     public int GetPlantState()
@@ -119,5 +125,4 @@ public class Plant : MonoBehaviour
         TouchController.OnTouch -= Planting;
         TouchController.OnHold -= Move;
     }
-
 }
