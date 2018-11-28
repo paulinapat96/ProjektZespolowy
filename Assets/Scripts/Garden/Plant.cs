@@ -4,125 +4,95 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
 using UnityEngine.SceneManagement;
 
 public class Plant : MonoBehaviour
 {
-    private int plantState;
-    private bool moveUp;
+    private plantStates plantState;
     private bool isActive;
+    private int gridX, gridY;
 
-    [SerializeField] private Text stats;
+    [SerializeField] private Text plantStats;
 
     private void Awake()
     {
-        plantState = 0;
-        /* plant states:
-         * 0 - is picked from catalogue
-         * 1 - is chosen to be planted
-         * 2 - is planted */
+        plantState = plantStates.IS_PICKED;
     }
 
     void Start()
     {
-        stats.enabled = false;
-        moveUp = true;
+        gridX = (int)transform.position.x + 5;
+        gridY = (int)transform.position.z + 5;
+        plantStats.enabled = false;
         isActive = false;
 
         TouchController.OnHold += Move;
-        TouchController.OnTouch += Planting;
+        TouchController.OnTouch += OnTouch;
     }
 
     void Update()
     {
-        if (plantState == 0)
+        gridX = (int)transform.position.x + 5;
+        gridY = (int)transform.position.z + 5;
+        if (transform.position.y == 0.5f)
         {
-            Float();
-        }
-        if(transform.position.y == 0.5f)
-        {
-            plantState = 2;
+            plantState = plantStates.IS_PLANTED;
         }
     }
     private void Move(Vector3 touch)
     {
-        plantState = 1;
+        plantState = plantStates.IS_BEING_PLANTED;
         if (this.gameObject.activeSelf == true)
         {
             transform.position = new Vector3((int)touch.x, 1.0f, (int)touch.z);
-            if (touch.x > 16.0f)
-            {
-                transform.position = new Vector3((int)(16.0f), 1.0f, (int)touch.z);
-            }
-            if (touch.z > 16.0f)
-            {
-                transform.position = new Vector3((int)touch.x, 1.0f, (int)(16.0f));
-            }
-            if (touch.x > 16.0f && touch.z > 16.0f)
-            {
-                transform.position = new Vector3((int)(16.0f), 1.0f, (int)(16.0f));
-            }
-            if (touch.x < 5.0f)
-            {
-                transform.position = new Vector3((int)(5.0f), 1.0f, (int)touch.z);
-            }
-            if (touch.z < 5.0f)
-            {
-                transform.position = new Vector3((int)touch.x, 1.0f, (int)(5.0f));
-            }
-            if (touch.x < 5.0f && touch.z < 5.0f)
-            {
-                transform.position = new Vector3((int)(5.0f), 1.0f, (int)(5.0f));
-            }
+            BoundariesCollision(touch);
         }
     }
 
-    private void Float()
+    private void BoundariesCollision(Vector3 touch)
     {
-        if (transform.position.y > 1.4f)
-            moveUp = false;
-        if (transform.position.y < 1.0f)
-            moveUp = true;
-
-        if (moveUp)
-            transform.position = new Vector3(transform.position.x, transform.position.y + 0.02f, transform.position.z);
-        else
-            transform.position = new Vector3(transform.position.x, transform.position.y - 0.02f, transform.position.z);
+        if (Mathf.Abs(touch.x) > 5.0f)
+        {
+            transform.position = new Vector3((int)(Mathf.Sign(touch.x)*5.0f), 1.0f, transform.position.z);
+        }
+        if (Mathf.Abs(touch.z) > 5.0f)
+        {
+            transform.position = new Vector3(transform.position.x, 1.0f, (int)(Mathf.Sign(touch.z)*5.0f));
+        }
     }
 
-    public void Planting(GameObject obj)
+    public void OnTouch(GameObject obj)
     {
         if (obj == this.gameObject)
         {
-            if (plantState == 1 && GameObject.Find("_Logic").GetComponent<GardenController>().grid[(int)transform.position.x - 5, (int)transform.position.z - 5] == 0)
+            if (plantState == plantStates.IS_BEING_PLANTED && !GardenController.grid[gridX, gridY])
             {
                 TouchController.OnHold -= Move;
                 transform.position = new Vector3(transform.position.x, 0.5f, transform.position.z);
-                GameObject.Find("_Logic").GetComponent<GardenController>().grid[(int)transform.position.x - 5, (int)transform.position.z - 5] = 1;
+                GardenController.grid[gridX, gridY] = true;
             }
-            if (plantState == 2) isActive = !isActive;
+            if (plantState == plantStates.IS_PLANTED) isActive = !isActive;
             if (isActive)
             {
-                stats.enabled = true;
+                plantStats.enabled = true;
                 this.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
             }
             else
             {
-                stats.enabled = false;
+                plantStats.enabled = false;
                 this.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
             }
         }
     }
 
-    public int GetPlantState()
+    public plantStates GetPlantState()
     {
         return plantState;
     }
 
     private void OnDestroy()
     {
-        TouchController.OnTouch -= Planting;
+        TouchController.OnTouch -= OnTouch;
         TouchController.OnHold -= Move;
     }
 }
