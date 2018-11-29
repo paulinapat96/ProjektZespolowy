@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
 using UnityEngine.SceneManagement;
 
 public class GUIController_Garden : MonoBehaviour
@@ -12,7 +11,7 @@ public class GUIController_Garden : MonoBehaviour
 
     // Use this for initialization
 
-    public static event Action<Vector3, int> OnClick;
+    public static event Action<int> OnClick;
 
     void Start()
     {
@@ -32,8 +31,6 @@ public class GUIController_Garden : MonoBehaviour
 
     public void OnClickPlantButton(int type)
     {
-        Vector3 pos = new Vector3(15.0f, 1.0f, 15.0f);
-        if (OnClick != null) OnClick(pos, type);
-
+        if (OnClick != null) OnClick(type);
     }
 }

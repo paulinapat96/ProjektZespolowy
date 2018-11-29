@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class Weed : Enemy
 {
-
     [SerializeField] private Image hpBarImage; 
     [SerializeField] private Text counterText;
     public int enemyCounter = 0;
@@ -60,6 +59,11 @@ public class Weed : Enemy
         if (OnDestroyWeed != null) OnDestroyWeed(gameObject);
     }
 
+    private void OnDestroy()
+    {
+        TouchController.OnTouch -= IsTouch;
+    }
+
     IEnumerator IncreaseCounter()
     {
         while (true)
@@ -70,4 +74,5 @@ public class Weed : Enemy
             yield return new WaitForSeconds(0.4f);
         } 
     }
+
 }
