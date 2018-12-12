@@ -18,8 +18,8 @@ public class EnemyController : MonoBehaviour
 	{
 		[SerializeField] private Text _enemiesLeft;
 		
-		public KillPair[] _enemiesToKill;
-		private KillPair[] _possibleEnemiesToKill;
+		public EnemiesInGames[] _enemiesToKill;
+		private EnemiesInGames[] _possibleEnemiesToKill;
 		
 		private Action _onWon;
 
@@ -56,23 +56,24 @@ public class EnemyController : MonoBehaviour
 		}
 
 		public string GetNextEnemy()
-		{
-			if (_possibleEnemiesToKill.Length == 0) return ""; 
-			
+		{	
 			int randomEnemy = Random.Range(0, _possibleEnemiesToKill.Length);
-
-			_possibleEnemiesToKill[randomEnemy].Amount--;
-
+			foreach (var enemiesInGamese in _possibleEnemiesToKill)
+			{
+				Debug.LogFormat("{0}: {1}", enemiesInGamese.Type, enemiesInGamese.Amount);
+			}
+			
 			string enemyToReturn = _possibleEnemiesToKill[randomEnemy].Type;
 
-			if (_possibleEnemiesToKill[randomEnemy].Amount <= 0)
-				_possibleEnemiesToKill = _possibleEnemiesToKill.Where(arg => arg.Amount > 0).ToArray();
+			if (_possibleEnemiesToKill.Length == 0) return "";
+			_possibleEnemiesToKill[randomEnemy].Amount--;
 
-//			Debug.Log("Returning new enemy: " + enemyToReturn + " left: ");
-//			foreach (var killPair in _possibleEnemiesToKill)
-//			{
-//				Debug.LogFormat("{0}: {1}", killPair.Type, killPair.Amount);
-//			}
+			
+			if (_possibleEnemiesToKill[randomEnemy].Amount <= 0)
+			{
+				_possibleEnemiesToKill = _possibleEnemiesToKill.Where(arg => arg.Amount > 0).ToArray();
+			}
+			
 			return enemyToReturn;
 		}
 
@@ -81,8 +82,6 @@ public class EnemyController : MonoBehaviour
 			return _enemiesToKill.All(arg => arg.Amount <= 0);
 		}
 		
-		
-
 		private void UpdateEnemiesLeft()
 		{
 			_enemiesLeft.text = _enemiesToKill.Sum(arg => arg.Amount).ToString();
@@ -92,7 +91,7 @@ public class EnemyController : MonoBehaviour
 	}
 
 	[Serializable]
-	public struct KillPair
+	public struct EnemiesInGames
 	{
 		public string Type;
 		public int Amount;
@@ -123,7 +122,8 @@ public class EnemyController : MonoBehaviour
 
 	private GameObject NameToPrefab(string name)
 	{
-		if (name.Equals("Worm")) return enemiesPrefs[1];
+		if (name.Equals("Bee")) return enemiesPrefs[2];
+		if (name.Equals("Ant")) return enemiesPrefs[1];
 		if (name.Equals("LadyBug")) return enemiesPrefs[0];
 
 		return null;
@@ -137,7 +137,7 @@ public class EnemyController : MonoBehaviour
 		_myWinCondition.Init();
 		_myWinCondition.AssignOnWon(PlayerWon);
 		
-		Time.timeScale = 1; //przeniesc do gamelogic
+		Time.timeScale = 1; 
 		
 		StartCoroutine(WaitToSpawnEnemy(timeToSpawnEnemy));
 		StartCoroutine(WaitToSpawnWeed(timeToSpawnWeed));
