@@ -8,23 +8,48 @@ using UnityEngine.SceneManagement;
 
 public class Plant : MonoBehaviour
 {
-    private plantStates plantState;
-    private bool isActive;
+    private enum lifeStates
+    {
+        IS_DYING,
+        IS_GROWING,
+        IS_READY_TO_HARVEST
+    }
+    private GardenController.plantStates plantState;
+    private lifeStates lifeState;
+    private int waterCounter;
+    [SerializeField] private int waterDemand;
+
+
+    [SerializeField] private int value;
+
     private int gridX, gridY;
 
-    [SerializeField] private Text plantStats;
+    [SerializeField] private Image timeBar;
+    private int timeToHarvest;
+    [SerializeField] private int timeToGrow;
+
+
+    [SerializeField] private Image plantEmotion;
+    [SerializeField] private Sprite sadFace; 
+    [SerializeField] private Sprite happyFace; 
+
+    public event Action<GameObject> OnDestroyPlant;
 
     private void Awake()
     {
-        plantState = plantStates.IS_PICKED;
+        plantState = GardenController.plantStates.IS_PICKED;
     }
 
     void Start()
     {
         gridX = (int)transform.position.x + 5;
         gridY = (int)transform.position.z + 5;
-        plantStats.enabled = false;
-        isActive = false;
+        plantEmotion.enabled = false;
+        timeBar.enabled = false;
+
+        lifeState = lifeStates.IS_DYING;
+        waterCounter = 0;
+        timeToHarvest = 0;
 
         TouchController.OnHold += Move;
         TouchController.OnTouch += OnTouch;
@@ -32,16 +57,20 @@ public class Plant : MonoBehaviour
 
     void Update()
     {
-        gridX = (int)transform.position.x + 5;
-        gridY = (int)transform.position.z + 5;
+        Time.timeScale = 1;
+        if (plantState != GardenController.plantStates.IS_PLANTED)
+        {
+            gridX = (int)transform.position.x + 5;
+            gridY = (int)transform.position.z + 5;
+        }
         if (transform.position.y == 0.5f)
         {
-            plantState = plantStates.IS_PLANTED;
+            plantState = GardenController.plantStates.IS_PLANTED;
         }
     }
     private void Move(Vector3 touch)
     {
-        plantState = plantStates.IS_BEING_PLANTED;
+        plantState = GardenController.plantStates.IS_BEING_PLANTED;
         if (this.gameObject.activeSelf == true)
         {
             transform.position = new Vector3((int)touch.x, 1.0f, (int)touch.z);
@@ -65,29 +94,75 @@ public class Plant : MonoBehaviour
     {
         if (obj == this.gameObject)
         {
-            if (plantState == plantStates.IS_BEING_PLANTED && !GardenController.grid[gridX, gridY])
+            if (plantState == GardenController.plantStates.IS_BEING_PLANTED && !GardenController.grid[gridX, gridY])
             {
-                TouchController.OnHold -= Move;
-                transform.position = new Vector3(transform.position.x, 0.5f, transform.position.z);
-                GardenController.grid[gridX, gridY] = true;
+                Planting();
             }
-            if (plantState == plantStates.IS_PLANTED) isActive = !isActive;
-            if (isActive)
+            if (plantState == GardenController.plantStates.IS_PLANTED)
             {
-                plantStats.enabled = true;
-                this.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
-            }
-            else
-            {
-                plantStats.enabled = false;
-                this.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
+                if (lifeState == lifeStates.IS_DYING)
+                {    
+                    Watering();         
+                }
+                if (lifeState == lifeStates.IS_READY_TO_HARVEST)
+                {
+                    Harvest();
+                }
             }
         }
     }
 
-    public plantStates GetPlantState()
+    private void Planting()
+    {
+        TouchController.OnHold -= Move;
+        transform.position = new Vector3(transform.position.x, 0.5f, transform.position.z);
+        GardenController.grid[gridX, gridY] = true;
+        plantEmotion.enabled = true;
+        plantEmotion.sprite = sadFace;
+    }
+    private void Watering()
+    {
+        waterCounter++;
+        if (waterCounter >= waterDemand)
+        {
+            lifeState = lifeStates.IS_GROWING;
+            StartCoroutine("IncreaseTime");
+            plantEmotion.enabled = false;
+            timeBar.enabled = true;
+        }
+    }
+
+    void Harvest()
+    {
+        GardenController.grid[gridX, gridY] = false;
+        GardenController.goldCount += value;
+        TouchController.OnTouch -= OnTouch;
+        TouchController.OnHold -= Move;
+        if (OnDestroyPlant != null) OnDestroyPlant(gameObject);
+    }
+
+    public GardenController.plantStates GetPlantState()
     {
         return plantState;
+    }
+
+    IEnumerator IncreaseTime()
+    {
+        while (true)
+        {
+            timeToHarvest++;
+            timeBar.fillAmount = (float)timeToHarvest / timeToGrow;
+            if (timeToHarvest == timeToGrow+1)
+            {
+                lifeState = lifeStates.IS_READY_TO_HARVEST;
+                plantEmotion.enabled = true;
+                timeBar.enabled = false;
+                plantEmotion.sprite = happyFace;
+                StopCoroutine("IncreaseTime");
+            }
+            yield return new WaitForSeconds(1.0f);
+            Debug.Log(timeToHarvest);
+        }
     }
 
     private void OnDestroy()
