@@ -11,6 +11,8 @@ public class Weed : Enemy
     
     public event Action<GameObject> OnDestroyWeed;
     
+    private Coroutine _enemySpawningCoroutine;
+    
     void Start()
     {
         Init();

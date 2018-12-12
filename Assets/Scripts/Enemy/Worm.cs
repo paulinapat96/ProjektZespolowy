@@ -35,9 +35,12 @@ public class Worm : Enemy {
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Interactable")
+        if (other.CompareTag("Interactable"))
         {
+            if (OnDie != null) OnDie(this.GetType().Name);
+
             Destroy(this.gameObject);
         }
+        
     }
 }

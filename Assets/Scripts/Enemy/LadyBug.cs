@@ -36,6 +36,8 @@ public class LadyBug : Enemy {
     {
         if (other.tag == "Interactable")
         {
+            if (OnDie != null) OnDie(this.GetType().Name);
+
             Destroy(this.gameObject);
         }
     }
