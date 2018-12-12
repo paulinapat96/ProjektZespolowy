@@ -4,23 +4,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum plantStates
-{
-    IS_PICKED,
-    IS_BEING_PLANTED,
-    IS_PLANTED,
-}
-
 public class GardenController : MonoBehaviour
 {
+    public enum plantStates
+    {
+        IS_PICKED,
+        IS_BEING_PLANTED,
+        IS_PLANTED
+    }
     [SerializeField] private List<GameObject> plantPrefs = new List<GameObject>();
     private List<GameObject> plants = new List<GameObject>();
     [SerializeField] private List<GameObject> tile = new List<GameObject>();
     public static bool[,] grid = new bool[11, 11];
+    public static int goldCount;
+    [SerializeField] private Text goldDisplay;
     plantStates newPlantState;
 
     void Start()
     {
+        goldCount = 0;
         newPlantState = 0;
         tile[0].GetComponent<Renderer>().material.color = Color.green;
 
@@ -34,14 +36,13 @@ public class GardenController : MonoBehaviour
 
         plantPrefs[0].SetActive(false);
         plantPrefs[1].SetActive(false);
-        plantPrefs[0].GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
-        plantPrefs[1].GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
 
         GUIController_Garden.OnClick += SpawnPlant;
     }
 
     void Update()
     {
+        goldDisplay.text = goldCount.ToString();
         if (plants.Count > 0)
         {
             newPlantState = plants[plants.Count - 1].GetComponent<Plant>().GetPlantState();
@@ -96,6 +97,22 @@ public class GardenController : MonoBehaviour
                 plants.RemoveAt(plants.Count - 1);
                 plants.Add(Instantiate(plantPrefs[1], plantPrefs[1].transform.position, transform.rotation));
                 plants[plants.Count - 1].SetActive(true);
+            }
+        }
+        plants[plants.Count-1].GetComponent<Plant>().OnDestroyPlant += HarvestPlant;
+    }
+
+    private void HarvestPlant(GameObject obj)
+    {
+        for (var i = 0; i < plants.Count; i++)
+        {
+            if (plants[i] == obj)
+            {
+                Plant plant = plants[i].GetComponent<Plant>();
+                plant.OnDestroyPlant -= HarvestPlant;
+                plants.RemoveAt(i);
+                Destroy(obj);
+                break;
             }
         }
     }
