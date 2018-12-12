@@ -4,81 +4,95 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
 using UnityEngine.SceneManagement;
 
 public class Plant : MonoBehaviour
 {
-    private int plantState;
-    private bool moveUp;
+    private plantStates plantState;
+    private bool isActive;
+    private int gridX, gridY;
+
+    [SerializeField] private Text plantStats;
 
     private void Awake()
     {
-        plantState = 0;
-        /* plant states:
-         * 0 - is picked from catalogue
-         * 1 - is chosen
-         * 2 - is planted */
+        plantState = plantStates.IS_PICKED;
     }
-    // Use this for initialization
+
     void Start()
     {
-        TouchController.OnHold += Move;
-        TouchController.OnTouch += Planting;
+        gridX = (int)transform.position.x + 5;
+        gridY = (int)transform.position.z + 5;
+        plantStats.enabled = false;
+        isActive = false;
 
-        moveUp = true;
+        TouchController.OnHold += Move;
+        TouchController.OnTouch += OnTouch;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (plantState == 0)
+        gridX = (int)transform.position.x + 5;
+        gridY = (int)transform.position.z + 5;
+        if (transform.position.y == 0.5f)
         {
-            Float();
+            plantState = plantStates.IS_PLANTED;
         }
     }
     private void Move(Vector3 touch)
     {
-        plantState = 1;
+        plantState = plantStates.IS_BEING_PLANTED;
         if (this.gameObject.activeSelf == true)
         {
             transform.position = new Vector3((int)touch.x, 1.0f, (int)touch.z);
+            BoundariesCollision(touch);
         }
     }
 
-    private void Float()
+    private void BoundariesCollision(Vector3 touch)
     {
-        if (transform.position.y > 2.0f)
-            moveUp = false;
-        if (transform.position.y < 1.0f)
-            moveUp = true;
-
-        if (moveUp)
-            transform.position = new Vector3(transform.position.x, transform.position.y + 0.02f, transform.position.z);
-        else
-            transform.position = new Vector3(transform.position.x, transform.position.y - 0.02f, transform.position.z);
-    }
-
-    public void Planting(GameObject obj)
-    {
-        if (plantState == 1)
+        if (Mathf.Abs(touch.x) > 5.0f)
         {
-            TouchController.OnHold -= Move;
-            transform.position = new Vector3(transform.position.x, 0.5f, transform.position.z);
-            plantState = 2;
+            transform.position = new Vector3((int)(Mathf.Sign(touch.x)*5.0f), 1.0f, transform.position.z);
         }
-        if (plantState ==2) Debug.Log("x=" + transform.position.x + "z=" + transform.position.z);
+        if (Mathf.Abs(touch.z) > 5.0f)
+        {
+            transform.position = new Vector3(transform.position.x, 1.0f, (int)(Mathf.Sign(touch.z)*5.0f));
+        }
     }
 
-    public int GetPlantState()
+    public void OnTouch(GameObject obj)
+    {
+        if (obj == this.gameObject)
+        {
+            if (plantState == plantStates.IS_BEING_PLANTED && !GardenController.grid[gridX, gridY])
+            {
+                TouchController.OnHold -= Move;
+                transform.position = new Vector3(transform.position.x, 0.5f, transform.position.z);
+                GardenController.grid[gridX, gridY] = true;
+            }
+            if (plantState == plantStates.IS_PLANTED) isActive = !isActive;
+            if (isActive)
+            {
+                plantStats.enabled = true;
+                this.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
+            }
+            else
+            {
+                plantStats.enabled = false;
+                this.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
+            }
+        }
+    }
+
+    public plantStates GetPlantState()
     {
         return plantState;
     }
 
     private void OnDestroy()
     {
-        TouchController.OnTouch -= Planting;
+        TouchController.OnTouch -= OnTouch;
         TouchController.OnHold -= Move;
     }
-
 }
