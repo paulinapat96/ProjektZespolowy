@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography.X509Certificates;
 using UnityEngine.Networking.NetworkSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class EnemyController : MonoBehaviour
@@ -14,12 +16,23 @@ public class EnemyController : MonoBehaviour
 	[Serializable]
 	public struct WinCondition
 	{
+		[SerializeField] private Text _enemiesLeft;
+		
 		public KillPair[] _enemiesToKill;
+		private KillPair[] _possibleEnemiesToKill;
+		
 		private Action _onWon;
+
+		public void Init()
+		{
+			_possibleEnemiesToKill = _enemiesToKill.ToArray();
+		}
 
 		public void AssignOnWon(Action onWon)
 		{
 			_onWon = onWon;
+			
+			UpdateEnemiesLeft();
 		}
 
 		public void EnemyDestroyed(string type)
@@ -34,16 +47,48 @@ public class EnemyController : MonoBehaviour
 				}
 			}
 
+			UpdateEnemiesLeft();
+
 			if (CheckWinCondition())
 			{
 				if (_onWon != null) _onWon();
 			}
 		}
 
+		public string GetNextEnemy()
+		{
+			if (_possibleEnemiesToKill.Length == 0) return ""; 
+			
+			int randomEnemy = Random.Range(0, _possibleEnemiesToKill.Length);
+
+			_possibleEnemiesToKill[randomEnemy].Amount--;
+
+			string enemyToReturn = _possibleEnemiesToKill[randomEnemy].Type;
+
+			if (_possibleEnemiesToKill[randomEnemy].Amount <= 0)
+				_possibleEnemiesToKill = _possibleEnemiesToKill.Where(arg => arg.Amount > 0).ToArray();
+
+//			Debug.Log("Returning new enemy: " + enemyToReturn + " left: ");
+//			foreach (var killPair in _possibleEnemiesToKill)
+//			{
+//				Debug.LogFormat("{0}: {1}", killPair.Type, killPair.Amount);
+//			}
+			return enemyToReturn;
+		}
+
 		public bool CheckWinCondition()
 		{
 			return _enemiesToKill.All(arg => arg.Amount <= 0);
 		}
+		
+		
+
+		private void UpdateEnemiesLeft()
+		{
+			_enemiesLeft.text = _enemiesToKill.Sum(arg => arg.Amount).ToString();
+		}
+		
+		
 	}
 
 	[Serializable]
@@ -52,6 +97,7 @@ public class EnemyController : MonoBehaviour
 		public string Type;
 		public int Amount;
 	}
+	
 
 	[Header("Win condition")] 
 	[SerializeField] private WinCondition _WinCondition;
@@ -60,6 +106,8 @@ public class EnemyController : MonoBehaviour
 	[SerializeField] private List<GameObject> enemiesPrefs = new List<GameObject>();
 	[SerializeField] private List<GameObject> weedsPrefs = new List<GameObject>();
 	private List<GameObject> weedsList =  new List<GameObject>();
+
+	[SerializeField] private GameObject _result;
 	
 	private int maxOnceEnemySpawnLimit = 10;
 	private float timeToSpawnEnemy = 3;
@@ -67,16 +115,26 @@ public class EnemyController : MonoBehaviour
 
 	private WinCondition _myWinCondition;
 	
-	private const int INTERVAL_TO_SPAWN_ENEMIES = 3;
-	private const int WEED_SPAWNED_ENEMIES_IN_ONE_SHOT = 10;
+	private const int TIME_TO_SPAWN_WEED_ENEMIES = 15;
+
+
 
 	private event Action _playerWon;
 
+	private GameObject NameToPrefab(string name)
+	{
+		if (name.Equals("Worm")) return enemiesPrefs[1];
+		if (name.Equals("LadyBug")) return enemiesPrefs[0];
+
+		return null;
+	}
+	
 	
 	void Start ()
 	{
 
 		_myWinCondition = _WinCondition;
+		_myWinCondition.Init();
 		_myWinCondition.AssignOnWon(PlayerWon);
 		
 		Time.timeScale = 1; //przeniesc do gamelogic
@@ -89,12 +147,18 @@ public class EnemyController : MonoBehaviour
 	
 	public void SpawnEnemy()
 	{
+		string enemyType = _myWinCondition.GetNextEnemy();
+
+		if (string.IsNullOrEmpty(enemyType)) return;
+
+		var prefab = NameToPrefab(enemyType);
+		
 		int sign = SignRandomize();
 		Vector3 position = sign > 0
 			? new Vector3(20 * SignRandomize(), 0, Random.Range(-30.0f, 30.0f))
 			: new Vector3(Random.Range(-20.0f, 20.0f), 0, 30 * SignRandomize());
 		
-		GameObject go = Instantiate(enemiesPrefs[1], position, transform.rotation);
+		GameObject go = Instantiate(prefab, position, transform.rotation);
 		Enemy enemy = go.GetComponent<Enemy>();  // TODO: Spawn enemy instead of gameobject
 		enemy.OnDie += _myWinCondition.EnemyDestroyed;
 
@@ -105,13 +169,24 @@ public class EnemyController : MonoBehaviour
 	{
 		for (int i = 0; i < quantity; i++)
 		{
+			string enemyType = _myWinCondition.GetNextEnemy();
+
+			if (string.IsNullOrEmpty(enemyType)) return;
+
+			var prefab = NameToPrefab(enemyType);
+
+			
 			if (SignRandomize() > 0)
 			{
-				Instantiate(enemiesPrefs[1], new Vector3(position.x + 3 * SignRandomize(), 0, Random.Range(position.z -3.0f ,position.z + 3.0f)), transform.rotation);
+				GameObject go =Instantiate(prefab, new Vector3(position.x + 3 * SignRandomize(), 0, Random.Range(position.z -3.0f ,position.z + 3.0f)), transform.rotation);
+				Enemy enemy = go.GetComponent<Enemy>();  // TODO: Spawn enemy instead of gameobject
+				enemy.OnDie += _myWinCondition.EnemyDestroyed;
 			}
 			else
 			{
-				Instantiate(enemiesPrefs[1], new Vector3(Random.Range(position.x - 3.0f, position.x + 3.0f), 0, position.z + 3 * SignRandomize()), transform.rotation);
+				GameObject go =Instantiate(prefab, new Vector3(Random.Range(position.x - 3.0f, position.x + 3.0f), 0, position.z + 3 * SignRandomize()), transform.rotation);
+				Enemy enemy = go.GetComponent<Enemy>();  // TODO: Spawn enemy instead of gameobject
+				enemy.OnDie += _myWinCondition.EnemyDestroyed;
 			}
 		}
 	}
@@ -119,6 +194,10 @@ public class EnemyController : MonoBehaviour
 	private void PlayerWon()
 	{
 		Debug.Log("Won won won!");
+
+		Time.timeScale = 0.01f;
+
+		_result.gameObject.SetActive(true);
 	}
 	
 	private void SpawnWeed()
@@ -150,7 +229,7 @@ public class EnemyController : MonoBehaviour
 				weed.OnDestroyWeed -= DestroyWeed;
 				weedsList.RemoveAt(i);
 
-				StartCoroutine(SpawnByTime(obj.transform.position, weed.enemyCounter, WEED_SPAWNED_ENEMIES_IN_ONE_SHOT));
+				StartCoroutine(SpawnByTime(obj.transform.position, weed.enemyCounter));
 							
 				Destroy(obj);
 				break;
@@ -158,23 +237,16 @@ public class EnemyController : MonoBehaviour
 		}
 	}
 
-	private IEnumerator SpawnByTime(Vector3 position, int amount, int spawnBy)
+	private IEnumerator SpawnByTime(Vector3 position, int amount)
 	{
 		int enemiesToSpawn = amount;
-
+		float spawnRate = TIME_TO_SPAWN_WEED_ENEMIES / (float) amount ;
 		while (enemiesToSpawn > 0)
 		{
-			if (enemiesToSpawn > spawnBy)
-			{
-				SpawnEnemy(position, spawnBy);
-				enemiesToSpawn -= spawnBy;
-			}
-			else
-			{
-				SpawnEnemy(position, enemiesToSpawn);
-				enemiesToSpawn = 0;
-			}
-			yield return new WaitForSeconds(INTERVAL_TO_SPAWN_ENEMIES);
+			SpawnEnemy(position, 1);
+			--enemiesToSpawn;
+			
+			yield return new WaitForSeconds(spawnRate);
 		}
 	} 
 
