@@ -1,18 +1,36 @@
 fileFormatVersion: 2
-guid: 16ea2ad0dea7eec40a008a84281569b5
+guid: ff4f6aee0de3c264facb9c1667d81dea
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
-    100000: ant
-    100002: //RootNode
-    400000: ant
-    400002: //RootNode
-    2100000: antMat
-    2300000: ant
-    3300000: ant
-    4300000: ant
-    9500000: //RootNode
-    2186277476908879412: ImportLogs
+    100000: //RootNode
+    100002: Factice01
+    100004: Forme02
+    100006: Plan01
+    100008: Sph_re02
+    100010: Sph_re03
+    400000: //RootNode
+    400002: Factice01
+    400004: Forme02
+    400006: Plan01
+    400008: Sph_re02
+    400010: Sph_re03
+    2100000: 08 - Default
+    2100002: 'Mat_riau #3'
+    2100004: 'Mat_riau #2'
+    2100006: 09 - Default
+    2300000: Forme02
+    2300002: Plan01
+    2300004: Sph_re02
+    2300006: Sph_re03
+    3300000: Forme02
+    3300002: Plan01
+    3300004: Sph_re02
+    3300006: Sph_re03
+    4300000: Forme02
+    4300002: Sph_re02
+    4300004: Sph_re03
+    4300006: Plan01
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -65,7 +83,7 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 1
     previousCalculatedGlobalScale: 1
-    hasPreviousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -89,7 +107,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

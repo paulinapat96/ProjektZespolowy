@@ -1,17 +1,46 @@
 fileFormatVersion: 2
-guid: 16ea2ad0dea7eec40a008a84281569b5
+guid: 268e5a442d3667e41b23e8991ce64612
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
-    100000: ant
-    100002: //RootNode
-    400000: ant
-    400002: //RootNode
-    2100000: antMat
-    2300000: ant
-    3300000: ant
-    4300000: ant
-    9500000: //RootNode
+    100000: group1_pCylinder1
+    100002: group1_pSphere3
+    100004: group1_pSphere4
+    100006: group1_pSphere5
+    100008: //RootNode
+    100010: polySurface1_group1
+    100012: pSphere1
+    400000: group1_pCylinder1
+    400002: group1_pSphere3
+    400004: group1_pSphere4
+    400006: group1_pSphere5
+    400008: //RootNode
+    400010: polySurface1_group1
+    400012: pSphere1
+    2100000: group1_pCylinder1Mat
+    2100002: group1_pSphere3Mat
+    2100004: group1_pSphere4Mat
+    2100006: group1_pSphere5Mat
+    2100008: polySurface1_group1Mat
+    2100010: pSphere1Mat
+    2300000: group1_pCylinder1
+    2300002: group1_pSphere3
+    2300004: group1_pSphere4
+    2300006: group1_pSphere5
+    2300008: polySurface1_group1
+    2300010: pSphere1
+    3300000: group1_pCylinder1
+    3300002: group1_pSphere3
+    3300004: group1_pSphere4
+    3300006: group1_pSphere5
+    3300008: polySurface1_group1
+    3300010: pSphere1
+    4300000: group1_pCylinder1
+    4300002: group1_pSphere3
+    4300004: group1_pSphere4
+    4300006: group1_pSphere5
+    4300008: polySurface1_group1
+    4300010: pSphere1
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:
@@ -65,7 +94,7 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 1
     previousCalculatedGlobalScale: 1
-    hasPreviousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -89,7 +118,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
