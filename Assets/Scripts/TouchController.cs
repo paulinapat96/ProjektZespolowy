@@ -20,11 +20,14 @@ public class TouchController : MonoBehaviour
     private Camera mainCamera;
     private GameObject lastTapped;
 
+    private Touch _touch;
+
     void Start()
     {
         plane = new Plane(Vector3.up, transform.position);
         mainCamera = Camera.main;
     }
+    
     void Update()
     {
         foreach (Touch touch in Input.touches)
@@ -38,27 +41,68 @@ public class TouchController : MonoBehaviour
             switch (touch.phase)
             {
                 case TouchPhase.Began:
-                    DetectTap(touch);
-                    isSwipe = true;
-                    fingerStartPos = touch.position;
-                    
+                    TouchBegan(touch);
+
                     break;
 
                 case TouchPhase.Canceled:
-                    isSwipe = false;
+                    TouchCancelled();
                     break;
 
                 case TouchPhase.Moved:
-                    DetectSwipe(touch);
-                    DetectHold(touch);
+                    TouchMoved(touch);
                     break;
 
                 case TouchPhase.Ended:
-                    DetectRelease(touch);
-                    isSwipe = false;
+                    TouchEnded(touch);
                     break;
             } 
         }
+        
+        #if UNITY_EDITOR
+        _touch.position = Input.mousePosition;
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            TouchBegan(_touch);
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            TouchMoved(_touch);
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            TouchEnded(_touch);   
+        }
+        else
+        {
+            TouchCancelled();
+        }
+        #endif
+    }
+
+    private void TouchEnded(Touch touch)
+    {
+        DetectRelease(touch);
+        isSwipe = false;
+    }
+
+    private void TouchMoved(Touch touch)
+    {
+        DetectSwipe(touch);
+        DetectHold(touch);
+    }
+
+    private void TouchCancelled()
+    {
+        isSwipe = false;
+    }
+
+    private void TouchBegan(Touch touch)
+    {
+        DetectTap(touch);
+        isSwipe = true;
+        fingerStartPos = touch.position;
     }
 
     private void DetectTap(Touch touch)
